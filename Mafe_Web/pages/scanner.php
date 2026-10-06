@@ -1,0 +1,5 @@
+<?php require_login(); ?>
+<section class="page-title"><span class="eyebrow">PRODUCT SCANNER</span><h1>Analyze what's inside.</h1><p>Use a barcode when your browser supports it, or paste the INCI list manually.</p></section>
+<div class="scanner-layout"><div class="panel scan-camera"><div id="cameraBox"><video id="video" autoplay playsinline></video><div class="scan-line"></div></div><button class="btn primary" id="startScan">Start camera scanner</button><p id="scanStatus">Camera access requires browser permission.</p></div>
+<div class="panel"><h2>Paste ingredient list</h2><textarea id="inci" rows="9" placeholder="Example: Water, Niacinamide, Glycerin, Hyaluronic Acid..."></textarea><button class="btn primary" id="analyze">Analyze ingredients</button><div id="analysis"></div><hr><h3>Or search by barcode</h3><form action="?page=products"><input name="q" id="barcode" placeholder="Enter barcode number"><button class="btn soft">Search database</button></form></div></div>
+<p class="notice">Scanner analysis here is a learning/demo implementation. It does not provide a medical diagnosis or guarantee that a product is suitable for you.</p>

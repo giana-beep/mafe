@@ -1,0 +1,9 @@
+<?php
+$ids=[];foreach(['a','b','c','d'] as $k){if(isset($_GET[$k]) && (int)$_GET[$k])$ids[]=(int)$_GET[$k];}
+if(isset($_POST['ids'])){$ids=array_values(array_filter(array_map('intval',$_POST['ids'])));}
+if(!$ids){$rs=db()->query("SELECT * FROM products ORDER BY id DESC LIMIT 4");while($x=$rs->fetch_assoc())$ids[]=$x['id'];}
+$products=[];foreach($ids as $id){$x=db()->query("SELECT * FROM products WHERE id=$id")->fetch_assoc();if($x)$products[]=$x;}
+?>
+<section class="page-title"><span class="eyebrow">TOOLS · COMPARE</span><h1>Compare side by side.</h1><p>See ingredients, benefits, concerns and match scores together.</p></section>
+<form class="compare-select"><div class="compare-search"><input id="compareSearch" placeholder="Search product to add…"><div id="compareResults"></div></div><div id="compareHidden"><?php foreach($products as $p):?><input type="hidden" name="ids[]" value="<?=$p['id']?>"><?php endforeach;?></div><button class="btn primary">Refresh comparison</button></form>
+<div class="compare-grid"><?php foreach($products as $p):$score=78;if(logged_in())$score=match_score($p,$me);?><div class="compare-card"><img src="<?=e($p['image'])?>"><small><?=e($p['brand'])?></small><h3><?=e($p['name'])?></h3><div class="compare-score"><?=$score?>%</div><p><?=e($p['category'])?></p><hr><b>Ingredients</b><p><?=e($p['ingredients_text'])?></p><b>Tags</b><div class="tags"><span><?=$p['fragrance_free']?'No fragrance':'Fragrance'?></span><span><?=$p['alcohol_free']?'No alcohol':'Alcohol'?></span><span><?=$p['acne_safe']?'Acne-friendly':'—'?></span></div><a href="?page=product&id=<?=$p['id']?>">View product →</a></div><?php endforeach;?></div>

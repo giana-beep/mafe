@@ -1,0 +1,9 @@
+<?php
+require_once "config.php"; require_login(); $a=$_POST['action']??'';
+if($a==='review'){ $pid=(int)$_POST['product_id'];$rating=max(1,min(5,(int)$_POST['rating']));$body=trim($_POST['body']);$st=db()->prepare("INSERT INTO reviews(user_id,product_id,rating,body) VALUES(?,?,?,?)");$st->bind_param("iiis",$_SESSION['user_id'],$pid,$rating,$body);$st->execute();header("Location:?page=product&id=$pid");exit;}
+if($a==='shelf'){ $pid=(int)$_POST['product_id'];$s=$_POST['shelf'];$st=db()->prepare("INSERT IGNORE INTO shelves(user_id,product_id,shelf) VALUES(?,?,?)");$st->bind_param("iis",$_SESSION['user_id'],$pid,$s);$st->execute();header("Location:?page=shelves");exit;}
+if($a==='post'){ $title=trim($_POST['title']);$body=trim($_POST['body']);$st=db()->prepare("INSERT INTO posts(user_id,title,body) VALUES(?,?,?)");$st->bind_param("iss",$_SESSION['user_id'],$title,$body);$st->execute();header("Location:?page=community");exit;}
+if($a==='routine'){ $name=trim($_POST['name']);$tod=$_POST['time_of_day'];$days=$_POST['days'];$st=db()->prepare("INSERT INTO routines(user_id,name,time_of_day,days,description) VALUES(?,?,?,?,?)");$uid=$_SESSION['user_id']; $desc=$_POST['description']; $st->bind_param("issss",$uid,$name,$tod,$days,$desc);$st->execute();header("Location:?page=routines");exit;}
+if($a==='add_routine_product'){ $rid=(int)$_POST['routine_id'];$pid=(int)$_POST['product_id'];$st=db()->prepare("INSERT IGNORE INTO routine_products(routine_id,product_id,step_no) VALUES(?,?,1)");$st->bind_param("ii",$rid,$pid);$st->execute();header("Location:?page=routine&id=$rid");exit;}
+if($a==='log'){ $rid=(int)$_POST['routine_id'];$date=date('Y-m-d');$st=db()->prepare("INSERT INTO routine_logs(user_id,routine_id,log_date) VALUES(?,?,?) ON DUPLICATE KEY UPDATE note=VALUES(note)");$uid=$_SESSION['user_id']; $st->bind_param("iis",$uid,$rid,$date);$st->execute();header("Location:?page=routine&id=$rid");exit;}
+?>

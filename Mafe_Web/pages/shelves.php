@@ -1,0 +1,5 @@
+<?php require_login();$tabs=['Liked','Owned','Wishlist','Disliked'];$active=$_GET['shelf']??'Liked';?>
+<section class="page-title"><span class="eyebrow">SHELVES</span><h1>Your little skincare library.</h1><p>Save products you love, own, want to try, or don't want to repeat.</p></section>
+<div class="tabs"><?php foreach($tabs as $t):?><a class="<?=$active===$t?'active':''?>" href="?page=shelves&shelf=<?=$t?>"><?=$t?></a><?php endforeach;?></div>
+<div class="product-grid"><?php $st=db()->prepare("SELECT p.* FROM products p JOIN shelves s ON s.product_id=p.id WHERE s.user_id=? AND s.shelf=? ORDER BY s.id DESC");$uid=$_SESSION['user_id']; $st->bind_param("is",$uid,$active);$st->execute();$rs=$st->get_result();while($p=$rs->fetch_assoc()):include "partials/product_card.php";endwhile;?></div>
+<?php if($rs->num_rows===0):?><div class="empty">Shelf ini masih kosong. Buka product lalu pilih <b>+ Shelf</b>.</div><?php endif;?>

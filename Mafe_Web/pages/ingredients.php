@@ -1,0 +1,4 @@
+<?php $q=trim($_GET['q']??'');$st=db()->prepare("SELECT * FROM ingredients WHERE name LIKE ? OR function_text LIKE ? ORDER BY name");$x="%$q%";$st->bind_param("ss",$x,$x);$st->execute();$rs=$st->get_result();?>
+<section class="page-title"><span class="eyebrow">INGREDIENT DICTIONARY</span><h1>Ingredient, decoded.</h1><p>Simple explanations for common skincare ingredients.</p></section>
+<form class="filterbar"><input name="q" value="<?=e($q)?>" placeholder="Search an ingredient…"><button class="btn primary">Search</button></form>
+<div class="ingredient-grid"><?php while($i=$rs->fetch_assoc()):?><article class="ingredient-card"><div class="ing-head"><span class="ing-icon">✦</span><div><h3><?=e($i['name'])?></h3><small><?=e($i['function_text'])?></small></div><em class="<?=$i['rating']==='Caution'?'warn':''?>"><?=e($i['rating'])?></em></div><p><b>Benefit:</b> <?=e($i['benefits'])?></p><p><b>Note:</b> <?=e($i['concerns'])?></p></article><?php endwhile;?></div>
